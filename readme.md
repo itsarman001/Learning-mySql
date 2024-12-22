@@ -1,28 +1,49 @@
-# MySQL
+# MySQL Notes
 
-## Structured Query Language (SQL)
-- **S**: Structured  
-- **Q**: Query  
-- **L**: Language
-
-SQL is a relational database language. It is not case-sensitive.
+MySQL is a popular open-source relational database management system (RDBMS) that uses Structured Query Language (SQL) for managing data in relational databases.
 
 ---
 
-## Database
-### Create Database:
+## Structured Query Language (SQL)
+
+- **S**: Structured
+- **Q**: Query
+- **L**: Language
+
+### Key Features:
+- SQL is not case-sensitive.
+- MySQL databases consist of tables that store data in a structured format.
+- Each table is made up of rows and columns:
+  - Rows represent individual data records.
+  - Columns represent specific attributes or fields within those records.
+
+---
+
+## Database Management
+
+### Creating a Database
+
 ```sql
 CREATE DATABASE database_name;
 ```
-### Select Database:
+- Replace `database_name` with the desired name for your database.
+
+### Selecting a Database
+
 ```sql
 USE database_name;
 ```
-### Delete Database:
+- Choose the database you want to work with.
+
+### Deleting a Database
+
 ```sql
 DROP DATABASE database_name;
 ```
-### Alter Database:
+- **Caution**: Deleting a database is irreversible.
+
+### Altering a Database
+
 ```sql
 -- Set database to read-only
 ALTER DATABASE database_name READ ONLY = 1;
@@ -33,11 +54,26 @@ ALTER DATABASE database_name READ ONLY = 0;
 
 ---
 
-## Table
-### Create a Table:
+## Table Management
+
+### Creating a Table
+
+```sql
+CREATE TABLE table_name (
+  column1 data_type constraint1,
+  column2 data_type constraint2,
+  ...
+);
+```
+- Replace `table_name` with your desired table name.
+- Specify the data type for each column (e.g., `VARCHAR`, `INT`, `DECIMAL`, `DATE`).
+- Define constraints as needed (e.g., `PRIMARY KEY`, `NOT NULL`, `UNIQUE`, `DEFAULT`).
+
+#### Example Table
+
 ```sql
 CREATE TABLE employees (
-  employee_id VARCHAR(10) PRIMARY KEY,
+  employee_id VARCHAR(10),
   first_name VARCHAR(100) NOT NULL,
   last_name VARCHAR(100) NOT NULL,
   email_id VARCHAR(50) NOT NULL,
@@ -46,99 +82,123 @@ CREATE TABLE employees (
   hourly_pay DECIMAL(5, 2) NOT NULL,
   hire_date DATE NOT NULL
 );
+
+-- Adding a primary key constraint
+ALTER TABLE employees
+ADD CONSTRAINT PRIMARY KEY (employee_id);
 ```
-### Unique Constraints:
+
+### Common Constraints
+
+- **PRIMARY KEY**: Uniquely identifies each row in a table (a table can only have one primary key).
+- **NOT NULL**: Ensures a column cannot have `NULL` values.
+- **UNIQUE**: Prevents duplicate values within a column.
+- **DEFAULT**: Sets a default value for a column if no value is explicitly provided during insertion.
+
+#### Example of Constraints
+
 ```sql
--- Ensure column values are unique
+-- UNIQUE Constraint
 CREATE TABLE unique_example (
   id INT AUTO_INCREMENT PRIMARY KEY,
   email VARCHAR(255) UNIQUE
 );
-```
-### Not Null Constraints:
-```sql
--- Ensure column values cannot be NULL
+
+-- NOT NULL Constraint
 CREATE TABLE not_null_example (
   id INT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(255) NOT NULL
 );
+
+-- DEFAULT Value
+CREATE TABLE cafeteria (
+  product_id INT AUTO_INCREMENT PRIMARY KEY,
+  product_name VARCHAR(100),
+  price DECIMAL(4, 2) DEFAULT 0.00
+);
+
+-- Alter an existing table to add a default value
+ALTER TABLE cafeteria
+ALTER price SET DEFAULT 0.00;
 ```
 
-### Delete a Table:
-```sql
-DROP TABLE table_name;
-```
-### Select a Table:
-```sql
-SELECT * FROM table_name;
-```
-### Add a Column:
+### Modifying Tables
+
+#### Adding a Column
+
 ```sql
 ALTER TABLE table_name
-ADD phone_number INT(10);
+ADD column_name data_type;
 ```
-### Change a Column Type:
-```sql
-ALTER TABLE employees
-MODIFY COLUMN email_id VARCHAR(50);
-```
-### Change a Column Name:
-```sql
--- Rename using RENAME COLUMN syntax (supported in recent MySQL versions)
-ALTER TABLE employees
-RENAME COLUMN email_address TO email_id;
 
--- For older versions, use CHANGE COLUMN:
-ALTER TABLE employees
-CHANGE COLUMN email_address email_id VARCHAR(100) NOT NULL;
-```
-### Change Order of a Column:
-```sql
-ALTER TABLE employees
-MODIFY email_id VARCHAR(50)
-AFTER last_name;
+#### Changing a Column Type
 
--- To move it to the first position, use:
-ALTER TABLE employees
-MODIFY email_id VARCHAR(50) FIRST;
+```sql
+ALTER TABLE table_name
+MODIFY COLUMN column_name new_data_type;
+```
+
+#### Renaming a Column
+
+```sql
+ALTER TABLE table_name
+RENAME COLUMN old_name TO new_name;
+```
+
+#### Changing Column Order
+
+```sql
+ALTER TABLE table_name
+MODIFY column_name data_type
+AFTER another_column;
+
+-- Move column to the first position
+ALTER TABLE table_name
+MODIFY column_name data_type FIRST;
+```
+
+### Deleting a Table
+
+```sql
+DROP TABLE table_name;
 ```
 
 ---
 
 ## Table Rows
-### Insert a Row:
+
+### Inserting Data
+
+#### Insert a Row
+
 ```sql
-INSERT INTO employees VALUES
-('E001', 'Alice', 'Johnson', 'alice.johnson@example.com', 1234567890, 'Software Engineer', 45.00, '2022-01-15');
+INSERT INTO table_name (column1, column2, ...) VALUES (value1, value2, ...);
 ```
-### Insert a Row with Selected Columns:
-```sql
-INSERT INTO employees (employee_id, first_name, last_name, email_id, designation) VALUES
-('E001', 'Alice', 'Johnson', 'alice.johnson@example.com', 'Software Engineer');
-```
-### Practice Data:
+
+#### Insert Multiple Rows
+
 ```sql
 INSERT INTO employees (employee_id, first_name, last_name, email_id, phone_number, designation, hourly_pay, hire_date) VALUES
 ('E001', 'Alice', 'Johnson', 'alice.johnson@example.com', 1234567890, 'Software Engineer', 45.00, '2022-01-15'),
-('E002', 'Bob', 'Smith', 'bob.smith@example.com', 9876543210, 'Project Manager', 60.50, '2020-06-20'),
-('E003', 'Charlie', 'Brown', 'charlie.brown@example.com', NULL, 'UX Designer', 40.00, '2021-09-01'),
-('E004', 'Dana', 'White', 'dana.white@example.com', 1122334455, 'DevOps Engineer', 50.75, '2019-11-10'),
-('E005', 'Evan', 'Green', 'evan.green@example.com', NULL, 'Technical Writer', 35.25, '2023-03-05'),
-('E006', 'Alice', 'Brown', 'alice.brown@example.com', 7788990011, 'QA Analyst', 38.50, '2021-07-12'),
-('E007', 'John', 'Doe', 'john.doe@example.com', 9988776655, 'Intern', 25.00, '2024-01-01'),
-('E008', 'Jane', 'Smith', 'jane.smith@example.com', 5544332211, 'Software Engineer', 45.00, '2022-10-10'),
-('E009', 'Bob', 'Johnson', 'bob.johnson@example.com', NULL, 'Business Analyst', 42.00, '2021-05-15'),
-('E010', 'Sophia', 'Williams', 'sophia.williams@example.com', 6677889900, 'Marketing Specialist', 48.00, '2020-02-28'),
-('E011', 'Mason', 'Taylor', 'mason.taylor@example.com', 3344556677, 'Product Manager', 55.00, '2019-09-10'),
-('E012', 'Alice', 'Smith', 'alice.smith@example.com', NULL, 'Software Engineer', 45.00, '2023-04-22'),
-('E013', 'Olivia', 'Brown', 'olivia.brown@example.com', NULL, 'Content Writer', 30.50, '2023-06-11'),
-('E014', 'Liam', 'Davis', 'liam.davis@example.com', 7766554433, 'HR Specialist', 41.25, '2020-12-01'),
-('E015', 'Isabella', 'Wilson', 'isabella.wilson@example.com', 9988112233, 'Finance Analyst', 52.00, '2018-07-30');
+('E002', 'Bob', 'Smith', 'bob.smith@example.com', 9876543210, 'Project Manager', 60.50, '2020-06-20');
 ```
 
----
+### Retrieving Data
 
-## Retrieve Data from Database:
+#### Select All Columns
+
+```sql
+SELECT * FROM table_name;
+```
+
+#### Select Specific Columns
+
+```sql
+SELECT column1, column2 FROM table_name;
+```
+
+#### Filtering Results
+
 ```sql
 -- Fetch all data
 SELECT * FROM employees;
@@ -162,53 +222,74 @@ SELECT * FROM employees WHERE phone_number IS NULL;
 SELECT * FROM employees WHERE phone_number IS NOT NULL;
 ```
 
----
+### Updating Data
 
-## Update and Delete Data
-### Update Data:
 ```sql
--- Update a single column
-UPDATE employees
-SET phone_number = 2343576890
-WHERE employee_id = 'E003';
-
--- Update multiple columns
-UPDATE employees
-SET designation = 'Senior Software Engineer', hourly_pay = 50.00
-WHERE employee_id = 'E001';
+UPDATE table_name
+SET column1 = new_value1, column2 = new_value2
+WHERE condition;
 ```
-### Delete Data:
-```sql
--- Delete a specific row
-DELETE FROM employees WHERE employee_id = 'E012';
 
--- Delete all rows (use with caution!)
-DELETE FROM employees;
+### Deleting Data
+
+```sql
+DELETE FROM table_name WHERE condition;
+
+-- Delete all rows
+DELETE FROM table_name;
 ```
 
 ---
 
-## Transactions: Autocommit, Commit, and Rollback
-### Autocommit:
+## Transactions
+
+- Transactions group multiple operations into a single unit.
+- Ensure data consistency by committing all changes or rolling back if an error occurs.
+
+### Autocommit Mode
+
 ```sql
 SET autocommit = 0; -- Disable autocommit
 SET autocommit = 1; -- Enable autocommit
 ```
-### Commit:
+
+### Commit Changes
+
 ```sql
-COMMIT; -- Save changes permanently
+COMMIT;
 ```
-### Rollback:
+
+### Rollback Changes
+
 ```sql
-ROLLBACK; -- Undo changes made in the transaction
+ROLLBACK;
 ```
 
 ---
 
 ## Miscellaneous Functions
-### Current Date and Time:
+
+### Fetching Current Date and Time
+
 ```sql
-SELECT CURRENT_DATE(); -- Fetch the current date
-SELECT CURRENT_TIME(); -- Fetch the current time
-SELECT NOW(); -- Fetch the current date and time
+SELECT CURRENT_DATE(); -- Current date
+SELECT CURRENT_TIME(); -- Current time
+SELECT NOW();          -- Current date and time
+```
+
+### Using CHECK Constraints
+
+- CHECK constraints limit the values that can be entered into a column.
+
+```sql
+ALTER TABLE employees
+ADD CONSTRAINT check_hourly_pay CHECK (hourly_pay >= 20);
+
+-- Dropping a CHECK constraint
+ALTER TABLE employees
+DROP CHECK check_hourly_pay;
+
+-- Example: Inserting data violating the CHECK constraint
+INSERT INTO employees (employee_id, first_name, last_name, email_id, designation, hourly_pay) VALUES
+('E016', 'Alice', 'Johnson', 'alice.johnson@example.com', 'Software Engineer', 15); -- Will fail if CHECK exists
 ```
